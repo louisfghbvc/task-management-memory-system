@@ -224,7 +224,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Manual[Manual "update memory bank" Request] --> ReadAll[MANDATORY: Read ALL Files]
+    Manual["Manual 'update memory bank' Request"] --> ReadAll[MANDATORY: Read ALL Files]
     
     ReadAll --> ReviewFiles[Review Each File]
     ReviewFiles --> ProjectBrief[Review projectbrief.md]
