@@ -1,6 +1,6 @@
 ---
-description:
-globs:
+description: 
+globs: 
 alwaysApply: true
 ---
 # Task Magic System Overview
@@ -9,7 +9,9 @@ Whenever you use this rule, start your message with the following:
 
 "Accessing Task Magic system overview..."
 
-The Task Magic system is a file-based project management and AI agent operational framework designed to plan features, manage development tasks, and maintain a memory of past work. It consists of three main components, each governed by its own detailed rule file:
+The Task Magic system is a file-based project management and AI agent operational framework designed to plan features, manage development tasks, and maintain a memory of past work. It integrates seamlessly with the Memory Bank system to provide persistent context across AI agent sessions.
+
+The system consists of three main components, each governed by its own detailed rule file, plus Memory Bank integration:
 
 1.  **Plans (`@plans.mdc`)**:
     *   **Purpose**: Defines how Product Requirements Documents (PRDs) are created and structured for the overall project and specific features.
@@ -29,4 +31,10 @@ The Task Magic system is a file-based project management and AI agent operationa
     *   **Log File**: A chronological log of archived tasks is maintained in `.ai/memory/TASKS_LOG.md`.
     *   **Details**: For storing to memory, full review [task-magic/memory.mdc](mdc:.cursor/rules/task-magic/memory.mdc)
 
-This interconnected system allows for structured project development, from high-level planning to task execution and historical review, primarily managed through Markdown files and defined agent responsibilities.
+4.  **Memory Bank Integration (`@memory-bank.mdc` + `@integration.mdc`)**:
+    *   **Purpose**: Provides persistent context across AI agent sessions and integrates with Task Magic.
+    *   **Location**: Memory Bank files stored in `memory-bank/` directory.
+    *   **Integration**: Seamless synchronization between persistent context and operational history.
+    *   **Details**: For Memory Bank operations, review [memory-bank.mdc](mdc:.cursor/rules/memory-bank.mdc) and [integration.mdc](mdc:.cursor/rules/integration.mdc)
+
+This interconnected system allows for structured project development with persistent memory, from high-level planning to task execution, historical review, and continuous learning across AI agent sessions.

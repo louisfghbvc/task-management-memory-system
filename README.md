@@ -1,102 +1,153 @@
-# Task Magic: Automagically create tasks for vibe coding projects
+# AI Agent Rule System
 
-This system helps you manage your software projects by defining plans, breaking them down into actionable tasks, and keeping a memory of what's been done, all while working seamlessly with AI agents like Cursor and Windsurf.
+This directory contains the rule files that govern AI agent behavior for the Task Management System project.
 
-One of the key goals is to avoid the "AI loop of death." ☠️ 
+## Rule System Architecture
 
-By breaking down work into smaller, focused tasks (each with a clear start, end, and test strategy), AI agents can tackle them effectively without losing context and making dumb mistakes.
-
-(Note: they will still sometimes make dumb mistakes but it is 10x less likely using a task-based approach.)
-
-The system provides permanent context through the `.ai/memory/` folder. This allows AI coding agents to see what has been built before and understand the how and why, helping them to ship new tasks more effectively.
-
-## Video walkthrough
-
-To get an idea of how to use Task Magic in your own projects, check out the video walkthrough below (and also subscribe to the channel, obvs).
-
-[![I built a task manager that makes Cursor "JUST WORK"](https://img.youtube.com/vi/XBu8KeWuQbM/0.jpg)](https://www.youtube.com/watch?v=XBu8KeWuQbM)
-
-## How it works
-
-Task Magic is a file-based system. This means all your project plans, tasks, and history are stored in plain text files (mostly Markdown) right in your project's `.ai/` directory. This makes it easy to version control, track changes, and for AI agents to read and understand your project.
-
-There are three main parts to Task Magic:
-
-1.  **Plans (`.ai/plans/`)**:
-    *   **Purpose**: This is where you define the "what" and "why" of your project or specific features. Think of these as your Product Requirements Documents (PRDs).
-    *   **Key files**:
-        *   `.ai/plans/PLAN.md`: A global overview of your entire project. It should be a concise summary and index, linking to more detailed feature plans.
-        *   `.ai/plans/features/{your-feature}-plan.md`: Detailed PRDs for each specific feature you're building. This is where the AI will look for specifics when generating tasks.
-    *   **AI interaction**: AI agents use these plans to understand the scope and requirements, helping to generate tasks.
-
-2.  **Tasks (`.ai/tasks/` & `.ai/TASKS.md`)**:
-    *   **Purpose**: This is where the actual work items live. AI agents (or you) can break down plans into individual, manageable tasks.
-    *   **Key files & structure**:
-        *   `.ai/tasks/task{id}_description.md`: Each task gets its own Markdown file. It includes details like status (pending, inprogress, completed), priority, dependencies, a description, and how to test it.
-        *   `.ai/TASKS.md`: This is your master checklist. It's a human-friendly overview of all tasks in the `.ai/tasks/` directory, showing their status at a glance. **This file and the individual task files are kept in sync by the AI.**
-    *   **AI interaction**: AI agents can create tasks from plans, update their status as they work on them, and help you manage dependencies.
-
-3.  **Memory (`.ai/memory/`)**:
-    *   **Purpose**: Completed and failed tasks, as well as old plans, are archived here. This provides a valuable history for the AI to learn from and for you to reference.
-    *   **Key files**:
-        *   `.ai/memory/tasks/`: Archived task files.
-        *   `.ai/memory/TASKS_LOG.md`: A log of when tasks were archived.
-        *   `.ai/memory/plans/`: Archived plan files.
-        *   `.ai/memory/PLANS_LOG.md`: A log for archived plans.
-    *   **AI interaction**: The AI can consult the memory to understand how similar things were done in the past, or why a certain approach was taken.
-
-## Working with AI agents (Cursor & Windsurf)
-
-Task Magic is designed to work closely with AI agents. Here's how rules and context are handled:
-
-*   **Automatic context (`_index.md` files)**:
-    *   Files named `_index.md` (like the one in `.windsurf/rules/.task-magic/_index.md` or `.cursor/rules/.task-magic/_index.mdc`) provide a high-level overview of a system or a set of rules.
-    *   These `_index.md` files are **automatically included in the AI's context** when you're working within a project that uses them. This gives the AI a foundational understanding without you needing to do anything extra.
-
-*   **On-demand rules (other `.md` or `.mdc` rule files)**:
-    *   Other rule files (e.g., `tasks.mdc`, `plans.mdc` located in `.cursor/rules/.task-magic/` or `.windsurf/rules/.task-magic/`) define specific behaviors or knowledge for the AI.
-    *   Each of these rule files has a `description` in its header. The AI agent (Cursor/Windsurf) can read these descriptions and **decide dynamically whether a specific rule is relevant** to your current request or the task it's performing.
-    *   If the AI deems a rule relevant, it will "fetch" and use that rule.
-
-*   **Your role: Guiding the AI with @-tags**:
-    *   While the agent is usually pretty good at figuring out which rules to use, you can manually tag the rules you want to use.
-    *   **For best results, @-tag specific rule files or directories in your prompts.** For example:
-        *   `@.cursor/rules/.task-magic/tasks.mdc create tasks for this feature`
-        *   `@.windsurf/rules/.task-magic/plans.md generate a plan for X`
-        *   `@TASKS.md what is the status of my project?` (to refer to the main task checklist)
-        *   `@.ai/plans/features/my-cool-feature-plan.md can you review this plan?`
-    *   This helps ensure the AI looks at the exact information you want it to.
-
-## Getting started
-
-1.  **Initialize `.ai/` structure**: If these directories don't exist, the AI will typically create them as needed when you ask it to create a plan or task. You can also create them manually.
-    *   `.ai/plans/PLAN.md` (start with a simple project title and overview)
-    *   `.ai/TASKS.md` (can start with just `# Project Tasks`)
-    *   `.ai/memory/TASKS_LOG.md` (can start with `# Task Archive Log`)
-2.  **Create a plan**: Ask your AI assistant to create a new feature plan using the planning rule (e.g., `@.cursor/rules/.task-magic/plans.mdc create a plan for user authentication`).
-3.  **Generate tasks**: Once a plan is ready, ask the AI to generate tasks from it (e.g., `@.cursor/rules/.task-magic/tasks.mdc generate tasks for the user-authentication-plan.md`).
-4.  **Work on tasks**: Tell the AI to start working on tasks. It will update `.ai/TASKS.md` and the individual task files as it progresses.
-5.  **Archive**: Periodically, ask the AI to archive completed or failed tasks to keep your active task list clean.
-
-By using Task Magic, you get a structured, AI-friendly way to manage your projects, ensuring both you and your AI assistants are always on the same page.
-
-## Customizing Task Magic
-
-I built this for myself to fit into my workflow. It might not work as well for you.
-
-But since this is file based rules and we're all vibe coding in Cursor/Windsurf, you can easily customize it to fit your workflow.
-
-If something doesn't work for you, tag the rule(s) you want to change, explain what doesn't work (and what you think might) and **have the agent update them for you.** 
-
-For example:
-
-```
-@plans.mdc I want my plans to be more concise and simple. Update the rule and make the PRD template shorter and to the point.
+```mermaid
+graph TD
+    subgraph "Core Systems"
+        TM[Task Magic System]
+        MB[Memory Bank System]
+        INT[Integration System]
+    end
+    
+    subgraph "Rule Files"
+        TM_Rules[.task-magic/]
+        MB_Rule[memory-bank.mdc]
+        INT_Rule[integration.mdc]
+    end
+    
+    subgraph "File Structure"
+        TM_Index[_index.mdc]
+        TM_Tasks[tasks.mdc]
+        TM_Plans[plans.mdc]
+        TM_Memory[memory.mdc]
+        TM_Expand[expand.mdc]
+    end
+    
+    TM --> TM_Rules
+    MB --> MB_Rule
+    INT --> INT_Rule
+    
+    TM_Rules --> TM_Index
+    TM_Rules --> TM_Tasks
+    TM_Rules --> TM_Plans
+    TM_Rules --> TM_Memory
+    TM_Rules --> TM_Expand
 ```
 
-## Contributing & feedback
+## File Structure
 
-This system is designed to evolve. If you have ideas for improvements, find a bug, or want to make Task Magic even better:
+```
+.cursor/rules/
+├── README.md                    # This overview file
+├── memory-bank.mdc             # Memory Bank system rules
+├── integration.mdc             # Integration between systems
+└── .task-magic/               # Task Magic system rules
+    ├── _index.mdc             # Task Magic overview
+    ├── tasks.mdc              # Task management rules
+    ├── plans.mdc              # Planning system rules
+    ├── memory.mdc             # Historical archival rules
+    ├── expand.mdc             # Task expansion rules
+    └── workflow.md            # Workflow documentation
+```
 
-*   **Open an issue**: If you encounter problems or have suggestions, please open an issue.
-*   **Submit Pull Requests**: If you've made enhancements to the rules or the system structure that you think would benefit others, feel free to submit a pull request.
+## System Overview
+
+### 1. Task Magic System (`.task-magic/`)
+- **Primary Purpose**: Operational task and plan management
+- **Key Components**: Active tasks, plans, historical archives
+- **File Location**: `.ai/` directory
+- **Entry Point**: `_index.mdc`
+
+### 2. Memory Bank System (`memory-bank.mdc`)
+- **Primary Purpose**: Persistent context across AI sessions
+- **Key Components**: Project context, patterns, progress tracking
+- **File Location**: `memory-bank/` directory
+- **Integration**: Syncs with Task Magic system
+
+### 3. Integration System (`integration.mdc`)
+- **Primary Purpose**: Coordinate between Memory Bank and Task Magic
+- **Key Features**: Unified commands, auto-sync, conflict resolution
+- **Operation**: Cross-system synchronization and consistency
+
+## Usage Patterns
+
+### For AI Agents
+
+#### Session Initialization
+1. **Read Task Magic Overview**: Start with `.task-magic/_index.mdc`
+2. **Read Memory Bank Rules**: Review `memory-bank.mdc`
+3. **Understand Integration**: Check `integration.mdc`
+4. **Apply Context**: Load actual project files as per rules
+
+#### Operation Modes
+- **Task Magic Mode**: Use `.task-magic/` rules for task operations
+- **Memory Bank Mode**: Use `memory-bank.mdc` for context operations
+- **Integration Mode**: Use `integration.mdc` for cross-system operations
+
+### For Users
+
+#### Rule Access
+- Use `@rule-name` syntax to reference specific rules
+- Rules are automatically applied based on trigger keywords
+- Manual rule invocation available through explicit requests
+
+#### System Health
+- All systems work together seamlessly
+- Integration layer handles consistency automatically
+- Error handling and recovery built-in
+
+## Key Features
+
+### Persistent Memory
+- **Context Preservation**: AI agents maintain project understanding across sessions
+- **Pattern Learning**: System learns and applies project-specific patterns
+- **Decision History**: Track and learn from past decisions
+
+### Operational Excellence
+- **Task Management**: Complete lifecycle from creation to archival
+- **Plan Management**: Structured approach to feature development
+- **Historical Context**: Learn from past implementations
+
+### Integration Benefits
+- **Unified Interface**: Single command set for all operations
+- **Auto-Synchronization**: Systems stay consistent automatically
+- **Conflict Resolution**: Intelligent handling of data conflicts
+
+## Advanced Usage
+
+### Custom Workflows
+The rule system supports custom workflows through:
+- Trigger keyword customization
+- Integration pattern extension
+- Custom synchronization rules
+
+### System Extension
+New capabilities can be added by:
+- Creating additional `.mdc` rule files
+- Extending integration patterns
+- Adding new trigger mechanisms
+
+### Performance Optimization
+The system includes:
+- Lazy loading of historical data
+- Efficient caching strategies
+- Optimized file access patterns
+
+## Best Practices
+
+### For Rule Development
+1. **Use Mermaid Diagrams**: Visual workflows improve understanding
+2. **Clear Trigger Patterns**: Define explicit activation conditions
+3. **Integration Awareness**: Consider cross-system impacts
+4. **Error Handling**: Include comprehensive error scenarios
+
+### For System Operation
+1. **Regular Synchronization**: Keep systems aligned
+2. **Context Maintenance**: Update Memory Bank regularly
+3. **Historical Review**: Leverage past work for better decisions
+4. **Performance Monitoring**: Watch for system health issues
+
+This rule system provides a comprehensive framework for AI agent operation, combining the operational excellence of Task Magic with the persistent memory capabilities of Memory Bank, all coordinated through intelligent integration. 
