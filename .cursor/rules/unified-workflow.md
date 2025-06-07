@@ -100,9 +100,7 @@ flowchart TD
 ```mermaid
 flowchart TD
     ActMode[Act Mode Triggered] --> CheckContext[Check Memory Bank]
-    CheckContext --> UpdateDocs[Update Documentation]
-    UpdateDocs --> UpdateRules[Update .cursor/rules if needed]
-    UpdateRules --> Execute[Execute Task]
+    CheckContext --> Execute[Execute Task]
     
     Execute --> TaskType{Task Type?}
     
@@ -121,7 +119,7 @@ flowchart TD
     Sync3 --> Document
     Sync4 --> Document
     
-    Document --> Learn[Update Project Intelligence]
+    Document --> Learn[Learn from Experience]
 ```
 
 ## Phase 3: Task Magic Operations
@@ -170,7 +168,7 @@ flowchart TD
     UpdateMasterSuccess --> UpdateProgress[Update Memory Bank progress.md]
     UpdateMasterFailed --> UpdateProgress
     
-    UpdateProgress --> LearnPattern[Learn from execution]
+    UpdateProgress --> Complete[Task Complete]
 ```
 
 ### 3.3 Task Archival Workflow
@@ -237,8 +235,7 @@ flowchart TD
     Progress --> Identify[Identify Updates Needed]
     Identify --> Update[Update Relevant Files]
     Update --> Consistency[Verify Consistency]
-    Consistency --> Rules[Update .cursor/rules]
-    Rules --> Sync[Sync with Task Magic]
+    Consistency --> Sync[Sync with Task Magic]
     Sync --> Complete[Update Complete]
 ```
 
@@ -279,8 +276,7 @@ flowchart TD
     NewInsights -->|No| SessionEnd[Session End]
     
     CaptureInsight --> UpdateRules[Update .cursor/rules]
-    UpdateRules --> UpdateMB[Update Memory Bank if needed]
-    UpdateMB --> SessionEnd
+    UpdateRules --> SessionEnd
 ```
 
 ## Phase 6: Error Handling and Recovery
@@ -324,6 +320,72 @@ flowchart TD
     Priority --> Update[Update Systems]
     Update --> Verify[Verify Resolution]
     Verify --> Healthy
+```
+
+## System Responsibility Matrix
+
+### Clear Separation of Concerns
+
+```mermaid
+graph TD
+    subgraph "Memory Bank System"
+        MB_P[Project State & Context]
+        MB_T[Technical Decisions]
+        MB_PR[Progress Tracking]
+        MB_A[Active Work Focus]
+        
+        MB_P --> MB_Files[memory-bank/ files]
+        MB_T --> MB_Files
+        MB_PR --> MB_Files
+        MB_A --> MB_Files
+    end
+    
+    subgraph "Task Magic System"
+        TM_L[Task Lifecycle]
+        TM_D[Dependencies]
+        TM_H[Historical Archive]
+        
+        TM_L --> TM_Files[.ai/ files]
+        TM_D --> TM_Files
+        TM_H --> TM_Files
+    end
+    
+    subgraph "AI Agent Learning"
+        AI_P[User Preferences]
+        AI_B[Behavior Patterns]
+        AI_W[Workflow Improvements]
+        
+        AI_P --> Rules_Files[.cursor/rules files]
+        AI_B --> Rules_Files
+        AI_W --> Rules_Files
+    end
+```
+
+### Update Responsibility Rules
+
+| System | Updates | Never Updates |
+|--------|---------|---------------|
+| **Memory Bank** | Project context, progress, technical decisions | .cursor/rules, task files |
+| **Task Magic** | Task status, dependencies, archives | Memory Bank files, .cursor/rules |
+| **AI Agent** | .cursor/rules based on experience | Memory Bank content, task details |
+
+### Data Flow Boundaries
+
+```mermaid
+flowchart TD
+    Experience[AI Agent Experience] --> Learn{Learning Type?}
+    
+    Learn -->|Project Context| MB_Update[Update Memory Bank]
+    Learn -->|Task Progress| TM_Update[Update Task Magic]
+    Learn -->|Behavior Pattern| Rules_Update[Update .cursor/rules]
+    
+    MB_Update --> MB_Sync[Sync with Task Magic]
+    TM_Update --> TM_Sync[Sync with Memory Bank]
+    Rules_Update --> Rules_Apply[Apply in Future Sessions]
+    
+    MB_Sync --> Consistent[Maintain Consistency]
+    TM_Sync --> Consistent
+    Rules_Apply --> Improved[Improved AI Behavior]
 ```
 
 ## Key Operational Principles

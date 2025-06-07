@@ -153,10 +153,10 @@ flowchart TD
 ```mermaid
 flowchart TD
     Start[Start] --> Context[Check Memory Bank]
-    Context --> Update[Update Documentation]
-    Update --> Rules[Update .cursor/rules if needed]
-    Rules --> Execute[Execute Task]
-    Execute --> Document[Document Changes]
+    Context --> Execute[Execute Task]
+    Execute --> Update[Update Memory Bank Documentation]
+    Update --> Sync[Sync with Task Magic]
+    Sync --> Document[Document Changes]
 ```
 
 ### Memory Update Workflow
@@ -228,7 +228,7 @@ flowchart TD
         P1[Review ALL Files]
         P2[Document Current State]
         P3[Clarify Next Steps]
-        P4[Update .cursor/rules]
+        P4[Sync with Task Magic]
         
         P1 --> P2 --> P3 --> P4
     end
@@ -303,7 +303,7 @@ sequenceDiagram
 2. **Context Building**: Combine Memory Bank context with Task Magic history
 3. **Decision Making**: Reference established patterns and constraints
 4. **Progress Tracking**: Update relevant files after significant work
-5. **Pattern Learning**: Document new insights in .cursor/rules
+5. **Pattern Learning**: AI agents may learn patterns during work (documented separately in .cursor/rules)
 
 ### For Users
 1. **Project Onboarding**: Review Memory Bank for project understanding
@@ -329,6 +329,51 @@ flowchart TD
 - Consult Task Magic history for historical accuracy
 - Flag inconsistencies for user review
 
+## System Boundaries and Responsibilities
+
+### Memory Bank Scope
+**Memory Bank ONLY manages:**
+- Project context and current state
+- Technical decisions and system patterns
+- Progress tracking and work focus
+- Integration with Task Magic system
+
+**Memory Bank NEVER manages:**
+- AI agent behavior rules (.cursor/rules)
+- Individual task file contents
+- User preferences or workflow patterns
+- System operation instructions
+
+### Clear Separation
+```mermaid
+graph TD
+    subgraph "Memory Bank Domain"
+        MB1[Project Context]
+        MB2[Technical Decisions]
+        MB3[Progress Tracking]
+        MB4[Work Focus]
+    end
+    
+    subgraph "AI Agent Domain"
+        AI1[Behavior Patterns]
+        AI2[User Preferences]
+        AI3[Learning Insights]
+        AI4[Workflow Improvements]
+    end
+    
+    subgraph "Task Magic Domain"
+        TM1[Task Lifecycle]
+        TM2[Dependencies]
+        TM3[Execution Status]
+        TM4[Historical Archive]
+    end
+    
+    MB1 -.-> TM1
+    MB3 -.-> TM3
+    AI1 -.-> MB1
+    AI3 -.-> MB2
+```
+
 ## Critical Reminders
 
 **REMEMBER**: After every memory reset, I begin completely fresh. The Memory Bank is my only link to previous work. It must be maintained with precision and clarity, as my effectiveness depends entirely on its accuracy.
@@ -337,7 +382,7 @@ flowchart TD
 - I MUST read ALL memory bank files at session start
 - I MUST review ALL files when "update memory bank" is triggered
 - I MUST maintain file hierarchy and dependencies
-- I MUST update .cursor/rules with new learning patterns
+- I MUST focus Memory Bank updates on project context, not AI behavior rules
 
 ## Best Practices
 
