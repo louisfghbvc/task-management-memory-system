@@ -9,7 +9,133 @@ Whenever you use this rule, start your message with the following:
 
 "Accessing Memory Bank system..."
 
-I am an AI agent with a fundamental characteristic: **my memory resets completely between sessions**. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. **I MUST read ALL memory bank files at the start of EVERY task - this is not optional.**
+I am an AI agent with a fundamental characteristic: **my memory resets completely between sessions**. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively.
+
+## Automatic Memory Bank Activation
+
+The system automatically determines if Memory Bank is needed by analyzing the project context. **Memory Bank is not always required** - for simple tasks, Task Magic alone is sufficient.
+
+### Auto-Detection Protocol
+
+```mermaid
+flowchart TD
+    Start[Session Start] --> ConfigCheck{.ai/.system-config exists?}
+    
+    ConfigCheck -->|Yes| ReadConfig[Read saved configuration]
+    ConfigCheck -->|No| AutoDetect[Perform auto-detection]
+    
+    ReadConfig --> ValidateConfig{Config still valid?}
+    ValidateConfig -->|Yes| ApplyMode[Apply saved mode]
+    ValidateConfig -->|No| AutoDetect
+    
+    AutoDetect --> ReadPlan[Read .cursor/ai/plans/PLAN.md]
+    ReadPlan --> AnalyzePlan[Analyze plan content]
+    AnalyzePlan --> Decision{Memory Bank needed?}
+    
+    Decision -->|Yes| EnableMB[Enable Memory Bank Mode]
+    Decision -->|No| TaskOnly[Task Magic Only Mode]
+    
+    EnableMB --> SaveConfig[Save decision to .cursor/ai/.system-config]
+    TaskOnly --> SaveConfig
+    SaveConfig --> ApplyMode
+    
+    ApplyMode --> BeginWork[Begin Operations]
+```
+
+### Detection Criteria
+
+**Enable Memory Bank if ANY of these conditions are met:**
+
+1. **Project Complexity Indicators:**
+   - Keywords: "architecture", "system design", "complex", "distributed", "microservices"
+   - Multiple major components or features (>3)
+   - Technical integration requirements mentioned
+
+2. **Timeline Indicators:**
+   - Long-term project: "months", "quarters", "roadmap", "phases"
+   - Timeline >4 weeks mentioned
+   - Multi-phase development
+
+3. **Collaboration Indicators:**
+   - Multiple team members mentioned
+   - Cross-team coordination required
+   - Knowledge sharing needs
+
+4. **Decision Tracking Needs:**
+   - Architecture decisions to document
+   - Technical choices requiring justification
+   - Pattern evolution tracking
+
+**Use Task Magic Only if:**
+- Keywords: "bugfix", "hotfix", "patch", "quick fix", "urgent", "simple"
+- Single feature or isolated task
+- Timeline <2 weeks
+- Maintenance or repair work
+- No architectural impact
+
+### Detection Algorithm
+
+```python
+def should_enable_memory_bank(plan_content, project_context):
+    # High-priority Memory Bank triggers
+    mb_keywords = [
+        "architecture", "system", "complex", "distributed", 
+        "roadmap", "long-term", "multi-phase", "integration",
+        "scalable", "design patterns", "technical stack"
+    ]
+    
+    # Task Magic only triggers  
+    tm_keywords = [
+        "bug", "fix", "patch", "urgent", "quick", "simple",
+        "hotfix", "maintenance", "isolated", "single"
+    ]
+    
+    content_lower = plan_content.lower()
+    
+    mb_score = sum(1 for keyword in mb_keywords if keyword in content_lower)
+    tm_score = sum(1 for keyword in tm_keywords if keyword in content_lower)
+    
+    # Additional checks
+    if "timeline" in content_lower and any(term in content_lower for term in ["month", "quarter", "week"]):
+        mb_score += 1
+    
+    if len([line for line in plan_content.split('\n') if line.strip().startswith('-')]) > 5:
+        mb_score += 1  # Many features/tasks = complex project
+    
+    return mb_score > tm_score and mb_score >= 2
+```
+
+### System Configuration File
+
+The detection decision is saved in `.cursor/ai/.system-config`:
+
+```yaml
+# System Configuration
+memory_bank_enabled: true
+detection_timestamp: "2024-01-15T10:30:00Z"
+detection_reason: "Complex multi-feature project with architecture decisions"
+detection_keywords: ["architecture", "system", "roadmap"]
+mode: "memory_bank"  # or "task_magic_only"
+plan_hash: "abc123..."  # To detect plan changes
+```
+
+### Manual Override
+
+Users can override auto-detection by adding to their plan:
+
+```markdown
+<!-- Memory Bank Control -->
+memory_bank: required    # Force enable
+memory_bank: disabled    # Force disable
+memory_bank: auto        # Use auto-detection (default)
+```
+
+Or by direct commands:
+- "enable memory bank for this project"
+- "use task magic only for this project"
+- "re-evaluate memory bank need"
+
+**I MUST read ALL memory bank files at the start of EVERY task when Memory Bank mode is enabled - this is not optional.**
 
 The Memory Bank system is a persistent memory framework designed to maintain project context across AI agent sessions. It provides structured documentation that enables agents to quickly recover context and continue work effectively after complete memory resets.
 
@@ -100,7 +226,7 @@ flowchart TD
     end
     
     subgraph "Integration with Task Magic"
-        TM[.ai/memory/]
+        TM[.cursor/ai/memory/]
         TMT[tasks/]
         TMP[plans/]
         TMM[history/]
@@ -122,14 +248,21 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Start[New AI Session] --> ReadAll[Read ALL Memory Bank Files]
-    ReadAll --> CheckComplete{Files Complete?}
+    Start[New AI Session] --> AutoDetect[Run Auto-Detection Protocol]
+    AutoDetect --> ModeDecision{Memory Bank Mode?}
     
-    CheckComplete -->|No| CreateMissing[Create Missing Files]
-    CreateMissing --> EstablishContext[Establish Context]
+    ModeDecision -->|Yes| ReadMemoryBank[Read ALL Memory Bank Files]
+    ModeDecision -->|No| TaskMagicOnly[Task Magic Only Mode]
     
-    CheckComplete -->|Yes| EstablishContext[Establish Context]
-    EstablishContext --> CheckHistory[Check Task Magic History]
+    ReadMemoryBank --> CheckComplete{Memory Bank Files Complete?}
+    CheckComplete -->|No| CreateMissing[Create Missing Memory Bank Files]
+    CheckComplete -->|Yes| EstablishContext[Establish Full Context]
+    CreateMissing --> EstablishContext
+    
+    TaskMagicOnly --> CheckTaskMagic[Check Task Magic State]
+    EstablishContext --> CheckTaskMagic
+    
+    CheckTaskMagic --> CheckHistory[Review .cursor/ai/memory/ archives]
     CheckHistory --> Ready[Ready for Work]
 ```
 

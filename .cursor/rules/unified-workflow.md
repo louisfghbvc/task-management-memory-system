@@ -34,7 +34,37 @@ graph TD
 
 ## Phase 1: Session Initialization
 
-### 1.1 Memory Bank Initialization (MANDATORY)
+### 1.1 Auto-Detection Protocol (MANDATORY FIRST STEP)
+
+```mermaid
+flowchart TD
+    Session[New AI Session] --> ConfigExists{.ai/.system-config exists?}
+    
+    ConfigExists -->|Yes| ReadConfig[Read Configuration]
+    ConfigExists -->|No| FirstTime[First Time Setup]
+    
+    ReadConfig --> ValidConfig{Configuration Valid?}
+    ValidConfig -->|Yes| ApplyMode[Apply Saved Mode]
+    ValidConfig -->|No| ReDetect[Re-run Detection]
+    
+    FirstTime --> AutoDetect[Auto-detect from Plan]
+    ReDetect --> AutoDetect
+    
+    AutoDetect --> ReadPlan[Read .cursor/ai/plans/PLAN.md]
+    ReadPlan --> Analyze[Analyze Plan Content]
+    Analyze --> Decision{Memory Bank Needed?}
+    
+    Decision -->|Yes| EnableMB[Enable Memory Bank Mode]
+    Decision -->|No| TaskOnly[Task Magic Only Mode]
+    
+    EnableMB --> SaveConfig[Save to .cursor/ai/.system-config]
+    TaskOnly --> SaveConfig
+    SaveConfig --> ApplyMode
+    
+    ApplyMode --> InitializeSystem[Initialize Selected System]
+```
+
+### 1.2 Memory Bank Initialization (When Enabled)
 
 ```mermaid
 flowchart TD
@@ -61,14 +91,14 @@ flowchart TD
 5. **Read `memory-bank/activeContext.md`** - Current work focus
 6. **Read `memory-bank/progress.md`** - Current status and progress
 
-### 1.2 Task Magic Integration
+### 1.3 Task Magic Integration (Always Active)
 
 ```mermaid
 flowchart TD
     MB_Ready[Memory Bank Ready] --> TM_Check[Check Task Magic State]
-    TM_Check --> ActiveTasks[Review .ai/TASKS.md]
-    ActiveTasks --> History[Check .ai/memory/ archives]
-    History --> Plans[Review .ai/plans/]
+    TM_Check --> ActiveTasks[Review .cursor/ai/TASKS.md]
+    ActiveTasks --> History[Check .cursor/ai/memory/ archives]
+    History --> Plans[Review .cursor/ai/plans/]
     Plans --> Sync[Synchronize Understanding]
     Sync --> Unified[Unified Context Established]
 ```
@@ -132,7 +162,7 @@ flowchart TD
     PlanTasks --> Expansion{Complex Tasks?}
     
     Expansion -->|Yes| SubTasks[Define Sub-tasks]
-    Expansion -->|No| UpdateMaster[Update .ai/TASKS.md]
+    Expansion -->|No| UpdateMaster[Update .cursor/ai/TASKS.md]
     
     SubTasks --> ParentTasks[Update Parent Tasks]
     ParentTasks --> UpdateMaster
@@ -147,7 +177,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Execute[Execute Task Request] --> ReadTasks[Read .ai/TASKS.md]
+    Execute[Execute Task Request] --> ReadTasks[Read .cursor/ai/TASKS.md]
     ReadTasks --> FindTask[Find First Pending Task]
     FindTask --> CheckDeps{Dependencies Met?}
     
@@ -176,9 +206,9 @@ flowchart TD
 ```mermaid
 flowchart TD
     Archive[Archive Request] --> FindCompleted[Find Completed/Failed Tasks]
-    FindCompleted --> MoveFiles[Move task files to .ai/memory/tasks/]
-    MoveFiles --> UpdateLog[Append summary to .ai/memory/TASKS_LOG.md]
-    UpdateLog --> RemoveEntries[Remove entries from .ai/TASKS.md]
+    FindCompleted --> MoveFiles[Move task files to .cursor/ai/memory/tasks/]
+    MoveFiles --> UpdateLog[Append summary to .cursor/ai/memory/TASKS_LOG.md]
+    UpdateLog --> RemoveEntries[Remove entries from .cursor/ai/TASKS.md]
     RemoveEntries --> UpdateMB[Update Memory Bank progress.md]
     UpdateMB --> UpdateActive[Update activeContext.md]
     UpdateActive --> ArchiveComplete[Archive Complete]
@@ -345,7 +375,7 @@ graph TD
         TM_D[Dependencies]
         TM_H[Historical Archive]
         
-        TM_L --> TM_Files[.ai/ files]
+        TM_L --> TM_Files[.cursor/ai/ files]
         TM_D --> TM_Files
         TM_H --> TM_Files
     end
