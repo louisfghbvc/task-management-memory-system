@@ -6,19 +6,34 @@ This directory contains the rule files that govern AI agent behavior for the Tas
 
 ```mermaid
 graph TD
-    subgraph "Core Systems"
-        TM[Task Magic System]
-        MB[Memory Bank System]
-        INT[Integration System]
+    subgraph "Unified System"
+        subgraph "Memory Bank System"
+            MB[Memory Bank Core]
+            MB_Context[Persistent Context]
+            MB_Learning[Project Intelligence]
+            MB_Integration[Task Magic Integration]
+            
+            MB --> MB_Context
+            MB --> MB_Learning
+            MB --> MB_Integration
+        end
+        
+        subgraph "Task Magic System"
+            TM[Task Magic Core]
+            TM_Active[Active Management]
+            TM_History[Historical Archives]
+            
+            TM --> TM_Active
+            TM --> TM_History
+        end
     end
     
     subgraph "Rule Files"
-        TM_Rules[.task-magic/]
         MB_Rule[memory-bank.mdc]
-        INT_Rule[integration.mdc]
+        TM_Rules[.task-magic/]
     end
     
-    subgraph "File Structure"
+    subgraph "Task Magic Rules"
         TM_Index[_index.mdc]
         TM_Tasks[tasks.mdc]
         TM_Plans[plans.mdc]
@@ -26,9 +41,9 @@ graph TD
         TM_Expand[expand.mdc]
     end
     
-    TM --> TM_Rules
-    MB --> MB_Rule
-    INT --> INT_Rule
+    Memory --> MB_Rule
+    Task --> TM_Rules
+    MB_Integration -.-> TM_Active
     
     TM_Rules --> TM_Index
     TM_Rules --> TM_Tasks
@@ -42,8 +57,7 @@ graph TD
 ```
 .cursor/rules/
 ├── README.md                    # This overview file
-├── memory-bank.mdc             # Memory Bank system rules
-├── integration.mdc             # Integration between systems
+├── memory-bank.mdc             # Enhanced Memory Bank system with integration
 └── .task-magic/               # Task Magic system rules
     ├── _index.mdc             # Task Magic overview
     ├── tasks.mdc              # Task management rules
@@ -62,30 +76,30 @@ graph TD
 - **Entry Point**: `_index.mdc`
 
 ### 2. Memory Bank System (`memory-bank.mdc`)
-- **Primary Purpose**: Persistent context across AI sessions
-- **Key Components**: Project context, patterns, progress tracking
+- **Primary Purpose**: Persistent context across AI sessions with built-in Task Magic integration
+- **Key Components**: 
+  - File hierarchy with clear dependencies
+  - Project intelligence and pattern learning
+  - Automatic synchronization with Task Magic
+  - Plan/Act mode workflows
 - **File Location**: `memory-bank/` directory
-- **Integration**: Syncs with Task Magic system
-
-### 3. Integration System (`integration.mdc`)
-- **Primary Purpose**: Coordinate between Memory Bank and Task Magic
-- **Key Features**: Unified commands, auto-sync, conflict resolution
-- **Operation**: Cross-system synchronization and consistency
+- **Integration**: Seamlessly integrated with Task Magic through unified workflows
 
 ## Usage Patterns
 
 ### For AI Agents
 
 #### Session Initialization
-1. **Read Task Magic Overview**: Start with `.task-magic/_index.mdc`
-2. **Read Memory Bank Rules**: Review `memory-bank.mdc`
-3. **Understand Integration**: Check `integration.mdc`
-4. **Apply Context**: Load actual project files as per rules
+1. **MANDATORY**: Read `memory-bank.mdc` first - establishes all context and integration patterns
+2. **Read Task Magic Overview**: Review `.task-magic/_index.mdc` for operational details  
+3. **Apply Context**: Load actual project files as per Memory Bank hierarchy
+4. **Ready for Work**: Unified system ready with full context
 
 #### Operation Modes
-- **Task Magic Mode**: Use `.task-magic/` rules for task operations
-- **Memory Bank Mode**: Use `memory-bank.mdc` for context operations
-- **Integration Mode**: Use `integration.mdc` for cross-system operations
+- **Memory Bank Mode**: Primary mode using `memory-bank.mdc` with integrated workflows
+- **Task Magic Mode**: Specialized operations using `.task-magic/` rules
+- **Plan Mode**: Planning workflows through Memory Bank system
+- **Act Mode**: Execution workflows with automatic synchronization
 
 ### For Users
 
@@ -101,20 +115,23 @@ graph TD
 
 ## Key Features
 
-### Persistent Memory
-- **Context Preservation**: AI agents maintain project understanding across sessions
-- **Pattern Learning**: System learns and applies project-specific patterns
-- **Decision History**: Track and learn from past decisions
+### Enhanced Memory Bank System
+- **Mandatory Memory**: AI agents MUST read all memory bank files at session start
+- **File Hierarchy**: Clear dependencies between projectbrief → context files → activeContext → progress
+- **Project Intelligence**: Learning journal in .cursor/rules captures patterns and preferences
+- **Plan/Act Modes**: Structured workflows for planning and execution
 
 ### Operational Excellence
-- **Task Management**: Complete lifecycle from creation to archival
-- **Plan Management**: Structured approach to feature development
-- **Historical Context**: Learn from past implementations
+- **Task Management**: Complete lifecycle from creation to archival through Task Magic
+- **Memory Integration**: Automatic synchronization between Memory Bank and Task Magic
+- **Historical Context**: Learn from past implementations stored in .ai/memory/
+- **Pattern Recognition**: Continuous learning and application of project-specific patterns
 
-### Integration Benefits
-- **Unified Interface**: Single command set for all operations
-- **Auto-Synchronization**: Systems stay consistent automatically
-- **Conflict Resolution**: Intelligent handling of data conflicts
+### Unified System Benefits
+- **Single Rule Entry**: Memory Bank rule contains all integration logic
+- **Automatic Sync**: Systems stay consistent without separate integration layer
+- **Context-First**: Memory Bank drives all operations with Task Magic providing operational support
+- **Simplified Architecture**: Two-system approach (Memory Bank + Task Magic) with built-in coordination
 
 ## Advanced Usage
 
@@ -150,4 +167,4 @@ The system includes:
 3. **Historical Review**: Leverage past work for better decisions
 4. **Performance Monitoring**: Watch for system health issues
 
-This rule system provides a comprehensive framework for AI agent operation, combining the operational excellence of Task Magic with the persistent memory capabilities of Memory Bank, all coordinated through intelligent integration. 
+This enhanced rule system provides a powerful framework for AI agent operation, with Memory Bank as the primary system providing persistent context, project intelligence, and integrated Task Magic coordination. The unified approach ensures consistent, context-aware AI behavior with continuous learning capabilities. 
