@@ -240,3 +240,56 @@ sequenceDiagram
 ```
 
 This enhanced rule system provides a powerful framework for AI agent operation, with Memory Bank as the primary system providing persistent context, Unified Workflow as the orchestration layer, and Task Magic providing operational task management. The three-system approach ensures consistent, context-aware AI behavior with continuous learning capabilities and comprehensive workflow management. 
+
+# Simplified Project Workflow
+
+## 1. Session Initialization
+- AI Agent **must read all Memory Bank files** at startup to establish complete project context.
+- Automatically determines whether to enter "Memory Bank Mode" or "Task Magic Only Mode" based on Memory Bank content and project complexity.
+
+## 2. Planning Phase (Plan Mode)
+- Generate/update PRD (Product Requirements Documents) and planning documents, stored in `.cursor/.ai/plans/`.
+- Only create Markdown documents, no code generation.
+- Use Mermaid diagrams for architecture visualization when needed.
+
+## 3. Task Management (Task Magic)
+- All development tasks exist as Markdown files in `.cursor/.ai/tasks/`.
+- Task status synchronized in `.cursor/.ai/TASKS.md`.
+- Completed or failed tasks are automatically archived to `.cursor/.ai/memory/tasks/` and logged in `TASKS_LOG.md`.
+
+## 4. Execution Phase (Act Mode)
+- Generate/modify code, install packages, run tests based on planning and task content.
+- **Synchronize Memory Bank updates** (e.g., progress.md, activeContext.md) upon completion.
+- Record major decisions or technical choices in systemPatterns.md or techContext.md.
+
+## 5. History & Learning
+- Historical tasks and decisions are automatically archived for future reference.
+- Project learning and patterns can be recorded in `.cursor/rules/` for continuous team knowledge optimization.
+
+---
+
+## Workflow Diagram
+
+```mermaid
+flowchart TD
+    Start[Start Session] --> ReadMB[Read Memory Bank]
+    ReadMB --> DetectMode{Auto Detect Mode}
+    DetectMode -->|Memory Bank| Plan[Planning Phase]
+    DetectMode -->|Task Magic Only| Task[Task Management]
+    Plan --> Task
+    Task --> Act[Execution Phase]
+    Act --> UpdateMB[Update Memory Bank]
+    UpdateMB --> Archive[Archive Tasks]
+    Archive --> End[End/Next Cycle]
+```
+
+---
+
+## Key Components
+
+- **Memory Bank**: Long-term project memory recording architecture, technology, progress, and decisions.
+- **Task Magic**: Daily task management and tracking ensuring every task is traceable.
+- **Plan/Act Mode**: Clear separation between planning and execution phases.
+- **Auto Sync**: All states and history automatically synchronized to reduce human errors.
+
+--- 
