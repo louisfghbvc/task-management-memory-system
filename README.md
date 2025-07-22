@@ -248,14 +248,14 @@ This enhanced rule system provides a powerful framework for AI agent operation, 
 - Automatically determines whether to enter "Memory Bank Mode" or "Task Magic Only Mode" based on Memory Bank content and project complexity.
 
 ## 2. Planning Phase (Plan Mode)
-- Generate/update PRD (Product Requirements Documents) and planning documents, stored in `.cursor/.ai/plans/`.
+- Generate/update PRD (Product Requirements Documents) and planning documents, stored in `.ai/plans/`.
 - Only create Markdown documents, no code generation.
 - Use Mermaid diagrams for architecture visualization when needed.
 
 ## 3. Task Management (Task Magic)
-- All development tasks exist as Markdown files in `.cursor/.ai/tasks/`.
-- Task status synchronized in `.cursor/.ai/TASKS.md`.
-- Completed or failed tasks are automatically archived to `.cursor/.ai/memory/tasks/` and logged in `TASKS_LOG.md`.
+- All development tasks exist as Markdown files in `.ai/tasks/`.
+- Task status synchronized in `.ai/TASKS.md`.
+- Completed or failed tasks are automatically archived to `.ai/memory/tasks/` and logged in `TASKS_LOG.md`.
 
 ## 4. Execution Phase (Act Mode)
 - Generate/modify code, install packages, run tests based on planning and task content.
